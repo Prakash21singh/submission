@@ -7,8 +7,19 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./Components/shared/Home.tsx";
 import CourseList from "./Components/CourseList.tsx";
 import CourseDetail from "./Components/CourseDetail.tsx";
+import Login from "./Components/Login.tsx";
+import Signup from "./Components/Signup.tsx";
+import Dashboard from "./Components/Dashboard.tsx";
 
 const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
   {
     path: "/",
     element: <App />,
@@ -20,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/courses",
         element: <CourseList />,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
       },
       {
         path: "/courses/:courseId",

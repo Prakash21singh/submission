@@ -4,16 +4,29 @@ import mongoose from "mongoose";
 import { Server } from "socket.io";
 import cors from "cors";
 import { routeConfig as Course } from "./routes/course.route";
+import { routeConfig as User } from "./routes/user.route";
+import cookieParser from "cookie-parser";
+
 const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
     origin: "*",
+    credentials: true,
   },
 });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Match this exactly with your frontend URL
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
+User(app);
 Course(app);
 // Database connection
 mongoose
