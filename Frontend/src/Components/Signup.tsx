@@ -17,7 +17,7 @@ const Signup: React.FC = () => {
     if (isAuthenticated) {
       navigate("/");
     }
-  }, []);
+  }, [dispatch]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,9 +25,8 @@ const Signup: React.FC = () => {
   };
 
   if (isAuthenticated) {
-    navigate("/"); // Redirect after successful signup
+    navigate("/");
   }
-
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col ">
       <form

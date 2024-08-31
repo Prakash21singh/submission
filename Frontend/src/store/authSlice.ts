@@ -34,7 +34,7 @@ export const login = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data.message);
     }
   }
 );
@@ -55,7 +55,8 @@ export const signup = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      console.log(error);
+      return rejectWithValue(error.response.data.message);
     }
   }
 );

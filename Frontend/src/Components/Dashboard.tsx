@@ -13,7 +13,9 @@ const Dashboard = () => {
           "http://localhost:5000/api/my-course",
           { withCredentials: true }
         );
-        const coursesData = response.data.courses.courses; // Ensure this is an array
+        const coursesData = response.data.courses;
+        console.log(coursesData);
+        // Ensure this is an array
         if (Array.isArray(coursesData)) {
           setCourses(coursesData);
         } else {
@@ -28,23 +30,52 @@ const Dashboard = () => {
     getEnrolledCourses();
   }, []);
 
+  async function markAsCompleted(id: string): Promise<void> {
+    axios
+      .post(
+        `http://localhost:5000/api/course/update/${id}`,
+        {},
+        { withCredentials: true }
+      )
+      .then((response: any) => {
+        const updatedCourse = response.data.course;
+        setCourses((courses) =>
+          courses.map((course) =>
+            course.courseId._id === updatedCourse.courseId
+              ? { ...course, completed: updatedCourse.completed }
+              : course
+          )
+        );
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  }
+
   return (
-    <div className="w-full flex items-center justify-around flex-wrap">
+    <div className="w-full flex items-center h-screen justify-around overflow-auto flex-col">
+      <h1 className="text-5xl my-5">Enrolled Courses</h1>
       {error && <p>{error}</p>}
-      {courses.length > 0 ? (
-        courses.map((course: any) => (
-          <Card
-            _id={course._id}
-            instructor={course.instructor}
-            likes={course.likes}
-            name={course.name}
-            thumbnail={course.thumbnail}
-            key={course._id}
-          />
-        ))
-      ) : (
-        <p>No courses available</p>
-      )}
+
+      <div className="w-full flex flex-col justify-center items-center">
+        {courses.length > 0 ? (
+          courses.map((course: any) => (
+            <Card
+              _id={course.courseId._id}
+              instructor={course.courseId.instructor}
+              likes={course.courseId.likes}
+              name={course.courseId.name}
+              thumbnail={course.courseId.thumbnail}
+              key={course.courseId._id}
+              isCompleted={course.completed}
+              markAsdone={() => markAsCompleted(course.courseId._id)}
+              seconday
+            />
+          ))
+        ) : (
+          <p>No courses available</p>
+        )}
+      </div>
     </div>
   );
 };

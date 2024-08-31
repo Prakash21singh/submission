@@ -2,6 +2,7 @@ import * as User from "../controllers/user.controller";
 import { verifyAuth } from "../middlewares/auth.middleware";
 
 export const routeConfig = (app: any) => {
+  app.post("/api/course/update/:courseId", [verifyAuth, User.Update]);
   app.post("/api/login", [User.login]);
   app.post("/api/signup", [User.signup]);
   app.get("/api/my-course", [verifyAuth, User.GetCourse]);

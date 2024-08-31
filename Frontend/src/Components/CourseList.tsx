@@ -27,7 +27,7 @@ const CourseList: React.FC = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="w-full flex items-center justify-around flex-wrap">
+    <div className="w-full h-screen flex items-center justify-start flex-wrap gap-4 overflow-auto">
       {courses.map((course) => (
         <Card
           _id={course._id}

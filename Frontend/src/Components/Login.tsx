@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     if (isAuthenticated) {
       navigate("/");
     }
-  }, []);
+  }, [dispatch]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,16 +49,16 @@ const Login: React.FC = () => {
           placeholder="Password"
           className="w-full p-5 rounded-sm bg-zinc-300 my-2 text-black outline-none"
         />
+        {error && <p>{error}</p>}
         <button
           type="submit"
           disabled={loading}
           className="w-full p-5 rounded-sm bg-slate-900 text-white">
           Login
         </button>
-        {error && <p>{error}</p>}
       </form>
       <p>
-        <a href="/login" className="text-blue-800 my-4 underline ">
+        <a href="/signup" className="text-blue-800 my-4 underline ">
           Sign up Now
         </a>
       </p>

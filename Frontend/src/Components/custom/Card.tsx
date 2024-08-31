@@ -7,9 +7,21 @@ interface Course {
   instructor: string;
   likes: number;
   thumbnail: string;
+  isCompleted?: boolean;
+  markAsdone?: () => {};
+  seconday?: boolean;
 }
 
-const Card = ({ _id, name, instructor, likes, thumbnail }: Course) => {
+const Card = ({
+  _id,
+  name,
+  instructor,
+  likes,
+  thumbnail,
+  isCompleted,
+  markAsdone,
+  seconday,
+}: Course) => {
   const navigate = useNavigate();
 
   function navigateToCourseDetails() {
@@ -25,9 +37,13 @@ const Card = ({ _id, name, instructor, likes, thumbnail }: Course) => {
   };
 
   return (
-    <div className="w-[30%] min-w-80  flex items-center justify-center rounded-lg shadow-md overflow-hidden">
+    <div className="w-full lg:w-[48%] min-w-80  flex items-center justify-center rounded-lg shadow-md overflow-hidden">
       <div className="border p-5 flex flex-col items-start w-full">
-        <img src={thumbnail} alt="Thumbnail" className="w-full rounded-sm" />
+        <img
+          src={thumbnail}
+          alt="Thumbnail"
+          className="w-full rounded-sm h-72"
+        />
         <p className="text-wrap font-semibold text-2xl"> {name}</p>
         <p className="text-lg">By:{instructor}</p>
         <div className="w-full flex items-center justify-between my-5">
@@ -41,6 +57,19 @@ const Card = ({ _id, name, instructor, likes, thumbnail }: Course) => {
           onClick={navigateToCourseDetails}>
           Checkout
         </div>
+        {seconday && (
+          <>
+            {!isCompleted ? (
+              <button
+                onClick={markAsdone}
+                className="bg-yellow-200 p-3 rounded-sm">
+                Mark As Completed
+              </button>
+            ) : (
+              <button className="bg-green-200 p-3 rounded-sm">Completed</button>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

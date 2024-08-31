@@ -15,10 +15,12 @@ const CourseDetail = () => {
   );
   const { user } = useSelector((state: RootState) => state.auth);
 
+  console.log({ user });
   if (!course) {
     return <div>Course not found</div>;
   }
 
+  console.log(course.enrollmentStatus);
   async function handleEnroll(id: string) {
     try {
       const response = await axios.post(
@@ -71,20 +73,20 @@ const CourseDetail = () => {
           </div>
           <div className="text-bold text-xl">Timing : {course.schedule}</div>
 
-          {user.courses.includes(course._id) ? (
+          {user?.courses?.includes(courseId) ? (
             <button className="bg-green-300 px-4 py-2 rounded-sm">
               Enrolled
             </button>
           ) : (
             <>
-              {course.enrollmentStatus === "open" ||
-                (course.enrollmentStatus === "In Progress" && (
-                  <button
-                    className="bg-yellow-300 px-4 py-2 rounded-sm"
-                    onClick={() => handleEnroll(course._id)}>
-                    Enroll Now
-                  </button>
-                ))}
+              {(course.enrollmentStatus === "Open" ||
+                course.enrollmentStatus === "In Progress") && (
+                <button
+                  className="bg-yellow-300 px-4 py-2 rounded-sm"
+                  onClick={() => handleEnroll(course._id)}>
+                  Enroll Now
+                </button>
+              )}
             </>
           )}
         </div>

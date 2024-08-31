@@ -11,8 +11,14 @@ const userSchema = new mongoose.Schema({
   },
   courses: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+      courseId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+      completed: {
+        type: Boolean,
+        default: false,
+      },
     },
   ],
 });

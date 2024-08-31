@@ -6,7 +6,7 @@ import cors from "cors";
 import { routeConfig as Course } from "./routes/course.route";
 import { routeConfig as User } from "./routes/user.route";
 import cookieParser from "cookie-parser";
-
+import morgan from "morgan";
 const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, {
@@ -18,7 +18,7 @@ export const io = new Server(server, {
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Match this exactly with your frontend URL
+    origin: "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -26,6 +26,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use(morgan("dev"));
 User(app);
 Course(app);
 // Database connection

@@ -12,6 +12,11 @@ export const signup = async (req: Request, res: Response) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const user = await User.findOne({ email });
+  if (user) {
+    return res.status(401).json({ message: "User already created" });
+  }
+
   const newUser = new User({
     email,
     password: hashedPassword,
@@ -50,25 +55,45 @@ export const login = async (req: Request, res: Response) => {
 
 export const GetCourse = async function (req: Request, res: Response) {
   const userId = (req as any).userId;
-  const courses = await User.findById(userId)
-    .select("courses")
-    .populate("courses");
-  res.status(200).json({ message: "Login successful", courses });
+  try {
+    const user = await User.findById(userId)
+      .select("courses")
+      .populate({
+        path: "courses.courseId",
+        model: "Course",
+      })
+      .exec();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const EnrollCourse = async function (req: Request, res: Response) {
   const { courseId } = req.params;
   const userId = (req as any).userId;
   const course = await Course.findById(courseId);
-  if (!course) return res.status(401).json({ message: "Invalid course found" });
+  if (!course) {
+    return res.status(404).json({ message: "Course not found" });
+  }
 
   const user = await User.findById(userId);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
 
-  if (!user.courses.includes(course._id)) {
-    user.courses.push(course._id);
+  const alreadyEnrolled = user.courses.some((courseEntry: any) =>
+    courseEntry.courseId.equals(course._id)
+  );
+
+  if (!alreadyEnrolled) {
+    // Enroll in the course
+    user.courses.push({ courseId: course._id, completed: false });
     await user.save();
     return res.status(201).json({ message: "Course enrolled successfully" });
   } else {
@@ -80,4 +105,35 @@ export const GetData = async function (req: Request, res: Response) {
   const userId = (req as any).userId;
   const user = await User.findById(userId).select("-password");
   res.status(200).json(user);
+};
+
+export const Update = async function (req: Request, res: Response) {
+  const userId = (req as any).userId;
+  const { courseId } = req.params;
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Find the course in the user's courses array
+  const courseIndex = user.courses.findIndex(
+    (course: any) => course.courseId.toString() === courseId
+  );
+
+  if (courseIndex === -1) {
+    return res
+      .status(404)
+      .json({ message: "Course not found in user's courses" });
+  }
+
+  user.courses[courseIndex].completed = true;
+
+  await user.save();
+
+  res
+    .status(200)
+    .json({
+      message: "Course status updated successfully",
+      course: user.courses[courseIndex],
+    });
 };
